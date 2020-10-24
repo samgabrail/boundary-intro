@@ -144,18 +144,18 @@ resource "boundary_host_set" "backend_windows_servers_ssh" {
   host_ids        = [for host in boundary_host.backend_windows_servers : host.id]
 }
 
-# create target for accessing backend servers on port :8000
-resource "boundary_target" "backend_servers_service" {
-  type         = "tcp"
-  name         = "Backend service"
-  description  = "Backend service target"
-  scope_id     = boundary_scope.core_infra.id
-  default_port = "8080"
+# create target for accessing backend servers on port :8080
+// resource "boundary_target" "backend_servers_service" {
+//   type         = "tcp"
+//   name         = "Backend service"
+//   description  = "Backend service target"
+//   scope_id     = boundary_scope.core_infra.id
+//   default_port = "8080"
 
-  host_set_ids = [
-    boundary_host_set.backend_servers_ssh .id
-  ]
-}
+//   host_set_ids = [
+//     boundary_host_set.backend_servers_ssh .id
+//   ]
+// }
 
 # create target for accessing backend servers on port :22
 resource "boundary_target" "backend_servers_ssh" {
