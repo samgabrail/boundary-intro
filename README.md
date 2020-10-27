@@ -16,9 +16,7 @@ Using token none (make sure to unset the BOUNDARY_TOKEN env variable if set):
 Using BOUNDARY_TOKEN env variable:
 ```shell
 export BOUNDARY_ADDR=http://192.168.1.80:9200
-boundary authenticate password -auth-method-id=ampw_1234567890 \
-      -login-name=admin -password=password \
-      -token-name=none -format=json | jq -r ".token" > boundary_token.txt
+boundary authenticate password -auth-method-id=ampw_1234567890 -login-name=admin -password=password -token-name=none -format=json | jq -r ".token" > boundary_token.txt
 export BOUNDARY_TOKEN=$(cat boundary_token.txt)
 ```
 
@@ -26,7 +24,7 @@ export BOUNDARY_TOKEN=$(cat boundary_token.txt)
 
 This works well with WSL
 ```shell
-boundary connect ssh -target-id ttcp_7LRbqnnjVy -host-id hst_6vtDxXpX5y
+boundary connect ssh -target-id ttcp_tP3Uoe7X2d -host-id hst_uFcRGR4FCF
 ```
 wireshark filter: `ip.addr == 192.168.1.80`
 
@@ -35,7 +33,7 @@ wireshark filter: `ip.addr == 192.168.1.80`
 This works well with WSL, just make sure you increase the connection count to at [least 2 for rdp to work.](https://discuss.hashicorp.com/t/rdp-to-windows-server-not-connecting/16169). Terraform already takes care of this.
 
 ```shell
-boundary connect rdp -target-id ttcp_BGvrgRh0XC -host-id hst_UOjKi24taj
+boundary connect rdp -target-id ttcp_nqhPabGuma -host-id hst_WB9GVkJe8L
 ```
 
 wireshark filter: `ip.addr == 192.168.1.80`
