@@ -2,13 +2,13 @@ terraform {
   required_providers {
     boundary = {
       source = "hashicorp/boundary"
-      version = "0.1.0"
+      version = "1.1.0"
     }
   }
 }
 
 provider "boundary" {
-  addr                            = "http://192.168.1.80:9200"
+  addr                            = "http://127.0.0.1:9200"
   auth_method_id                  = "ampw_1234567890"
   password_auth_method_login_name = "admin"
   password_auth_method_password   = "password"
@@ -37,7 +37,7 @@ resource "boundary_auth_method" "password" {
 }
 
 ## Create user accounts with password: password
-resource "boundary_account" "users_acct" {
+resource "boundary_account_password" "users_acct" {
   for_each       = var.users
   name           = each.key
   description    = "User account for ${each.key}"
@@ -47,7 +47,7 @@ resource "boundary_account" "users_acct" {
   auth_method_id = boundary_auth_method.password.id
 }
 
-resource "boundary_account" "readonly_users_acct" {
+resource "boundary_account_password" "readonly_users_acct" {
   for_each       = var.readonly_users
   name           = each.key
   description    = "User account for ${each.key}"
@@ -103,45 +103,44 @@ resource "boundary_scope" "core_infra" {
   auto_create_admin_role = true
 }
 
-resource "boundary_host_catalog" "backend_servers" {
+resource "boundary_host_catalog_static" "backend_servers" {
   name        = "backend_servers"
   description = "Backend servers host catalog"
-  type        = "static"
   scope_id    = boundary_scope.core_infra.id
 }
 
-resource "boundary_host" "backend_servers" {
+resource "boundary_host_static" "backend_servers" {
   for_each        = var.backend_server_ips
   type            = "static"
   name            = "backend_server_service_${each.value}"
   description     = "Backend server host"
   address         = each.key
-  host_catalog_id = boundary_host_catalog.backend_servers.id
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
 }
 
-resource "boundary_host" "backend_windows_servers" {
+resource "boundary_host_static" "backend_windows_servers" {
   for_each        = var.backend_windows_server_ips
   type            = "static"
   name            = "backend_windows_server_service_${each.value}"
   description     = "Backend windows server host"
   address         = each.key
-  host_catalog_id = boundary_host_catalog.backend_servers.id
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
 }
 
-resource "boundary_host_set" "backend_servers_ssh" {
+resource "boundary_host_set_static" "backend_servers_ssh" {
   type            = "static"
   name            = "backend_servers_ssh"
   description     = "Host set for backend servers"
-  host_catalog_id = boundary_host_catalog.backend_servers.id
-  host_ids        = [for host in boundary_host.backend_servers : host.id]
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
+  host_ids        = [for host in boundary_host_static.backend_servers : host.id]
 }
 
-resource "boundary_host_set" "backend_windows_servers_ssh" {
+resource "boundary_host_set_static" "backend_windows_servers_ssh" {
   type            = "static"
   name            = "backend_windows_servers_ssh"
   description     = "Host set for backend Windows servers"
-  host_catalog_id = boundary_host_catalog.backend_servers.id
-  host_ids        = [for host in boundary_host.backend_windows_servers : host.id]
+  host_catalog_id = boundary_host_catalog_static.backend_servers.id
+  host_ids        = [for host in boundary_host_static.backend_windows_servers : host.id]
 }
 
 # create target for accessing backend servers on port :8080
@@ -152,8 +151,8 @@ resource "boundary_host_set" "backend_windows_servers_ssh" {
 //   scope_id     = boundary_scope.core_infra.id
 //   default_port = "8080"
 
-//   host_set_ids = [
-//     boundary_host_set.backend_servers_ssh .id
+//   host_source_ids = [
+//     boundary_host_set_static.backend_servers_ssh .id
 //   ]
 // }
 
@@ -165,8 +164,8 @@ resource "boundary_target" "backend_servers_ssh" {
   scope_id     = boundary_scope.core_infra.id
   default_port = "22"
 
-  host_set_ids = [
-    boundary_host_set.backend_servers_ssh.id
+  host_source_ids = [
+    boundary_host_set_static.backend_servers_ssh.id
   ]
 }
 
@@ -178,7 +177,7 @@ resource "boundary_target" "backend_servers_rdp" {
   scope_id     = boundary_scope.core_infra.id
   default_port = "3389"
   session_connection_limit = 2
-  host_set_ids = [
-    boundary_host_set.backend_windows_servers_ssh.id
+  host_source_ids = [
+    boundary_host_set_static.backend_windows_servers_ssh.id
   ]
 }

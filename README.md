@@ -52,9 +52,9 @@ wireshark filter: `ip.addr == 192.168.1.80`
 11. Conclusion
 
 ## References
-[Blog Announcement](https://www.hashicorp.com/blog/hashicorp-boundary)
-[Armon's Whiteboard](https://youtu.be/tUMe7EsXYBQ)
-[Terraform Boundary Provider](https://registry.terraform.io/providers/hashicorp/boundary/latest)
-[Getting Started Learn Guide](https://learn.hashicorp.com/tutorials/boundary/getting-started-intro?in=boundary/getting-started)
-[Production AWS Reference Architecture](https://github.com/hashicorp/boundary-reference-architecture)
-[Production High Availability Architecture](https://www.boundaryproject.io/docs/installing/high-availability)
+- [Blog Announcement](https://www.hashicorp.com/blog/hashicorp-boundary)
+- [Armon's Whiteboard](https://youtu.be/tUMe7EsXYBQ)
+- [Terraform Boundary Provider](https://registry.terraform.io/providers/hashicorp/boundary/latest)
+- [Getting Started Learn Guide](https://learn.hashicorp.com/tutorials/boundary/getting-started-intro?in=boundary/getting-started)
+- [Production AWS Reference Architecture](https://github.com/hashicorp/boundary-reference-architecture)
+- [Production High Availability Architecture](https://www.boundaryproject.io/docs/installing/high-availability)
